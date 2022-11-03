@@ -1,6 +1,12 @@
 const validator = require("validator")
+const express = require('express');
+const router = express.Router()
 const userModel = require("../models/user.model")
+const middleware = require("../middlewares")
 const bcrypt = require("bcrypt")
+
+const jwt = require('jsonwebtoken')
+const tokenSecret = "my-token-secret"
 
 function signup(req, res) {
     let firstName = req.body.firstName
@@ -34,9 +40,9 @@ function signup(req, res) {
     if (password == undefined || !passregex.test(password)) {
         isError = true
         errors.passwordError = "Should Contain 1 Capital,1 Small,1 Number & 1 Special Char"
-    } else {
-
     }
+
+
 
     if (isError) {
         res.json({
@@ -46,32 +52,91 @@ function signup(req, res) {
             msg: "Please Correct All errors"
         })
     } else {
-        let user = new userModel({
-            "firstName": firstName,
-            "lastName": lastName,
-            "emailId": emailId,
-            "password": hash,
-            "mobNum": mobNum,
-            "role": role
-
-        })
-        user.save(function (err, success) {
-            if (err) {
+        userModel.findOne({ "emailId": emailId }, (err, success) => {
+            if (success) {
                 res.json({
                     status: 402,
-                    msg: "Something is wrong",
-                    data: req.body
+                    data: emailId,
+                    msg: "Email Already Exists"
                 })
             } else {
-                res.json({
-                    msg: "Signup done...",
-                    status: 200,
-                    data: success
+                let user = new userModel({
+                    "firstName": firstName,
+                    "lastName": lastName,
+                    "emailId": emailId,
+                    "password": hash,
+                    "mobNum": mobNum,
+                    "role": role
+
+                })
+
+                user.save(function (err, success) {
+                    if (err) {
+                        res.json({
+                            status: 402,
+                            msg: "Something is wrong",
+                            data: req.body
+                        })
+                    } else {
+                        res.json({
+                            msg: "Signup done...",
+                            status: 200,
+                            data: success
+                        })
+                    }
                 })
             }
         })
+
     }
 }
 
+function login(req, res) {
+    let emailId = req.body.emailId
+    let password = req.body.password
+    let errors = {}
+    let isError = false
+
+    userModel.findOne({ "emailId": emailId }).populate("role").exec(function (err, success) {
+        if (err) {
+            res.json({
+                status: 402,
+                msg: "Something is wrong",
+                data: req.body
+            })
+        } else {
+            // res.json({
+            //     status: 200,
+            //     msg: "User Found",
+            //     data: success
+            // })
+            bcrypt.compare(password, success.password, function (err, result) {
+                console.log(result);
+                if (result) {
+                    res.json({
+                        status: 200,
+                        msg: "User Found",
+                        data: success
+                    })
+                } else {
+                    res.json({
+                        status: 401,
+                        msg: "Invalid Credentials",
+                        data: "Please try again"
+                    })
+                }
+            })
+        }
+    })
+
+    // console.log(bcrypt.compareSync(password,"$2b$10$0VXGOQHHmBVVW/qbgc9VjudmoomUOAqFi7ElGZy14u.T7NYi3llA6"));
+}
+
+
+
+function generateToken(user) {
+    return jwt.sign({ data: user }, tokenSecret, { expiresIn: '24h' })
+}
 
 module.exports.signup = signup
+module.exports.login = login
