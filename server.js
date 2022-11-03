@@ -30,7 +30,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-app.use("/user",userrouter)
+app.use("/auth",userrouter)
 app.use("/role",rolerouter)
 
 let port = 9898

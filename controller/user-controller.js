@@ -94,8 +94,6 @@ function signup(req, res) {
 function login(req, res) {
     let emailId = req.body.emailId
     let password = req.body.password
-    let errors = {}
-    let isError = false
 
     userModel.findOne({ "emailId": emailId }).populate("role").exec(function (err, success) {
         if (err) {
