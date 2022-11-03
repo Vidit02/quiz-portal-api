@@ -95,37 +95,62 @@ function login(req, res) {
     let emailId = req.body.emailId
     let password = req.body.password
 
-    userModel.findOne({ "emailId": emailId }).populate("role").exec(function (err, success) {
-        if (err) {
-            res.json({
-                status: 402,
-                msg: "Something is wrong",
-                data: req.body
-            })
-        } else {
-            // res.json({
-            //     status: 200,
-            //     msg: "User Found",
-            //     data: success
-            // })
-            bcrypt.compare(password, success.password, function (err, result) {
-                console.log(result);
-                if (result) {
-                    res.json({
-                        status: 200,
-                        msg: "User Found",
-                        data: success
-                    })
-                } else {
-                    res.json({
-                        status: 401,
-                        msg: "Invalid Credentials",
-                        data: "Please try again"
-                    })
-                }
-            })
-        }
-    })
+    if (emailId == "" || password == "") {
+        res.json({
+            status: 402,
+            msg: "Something is wrong",
+            data: req.body
+        })
+    } else {
+
+
+        userModel.findOne({ "emailId": emailId }).populate("role").exec(function (err, success) {
+            if (err || err == null && success == null) {
+                res.json({
+                    status: 402,
+                    msg: "Something is wrong",
+                    data: req.body
+                })
+            } else {
+                // res.json({
+                //     status: 200,
+                //     msg: "User Found",
+                //     data: success
+                // })
+                bcrypt.compare(password, success.password, function (err, result) {
+                    if(err){
+                        res.json({
+                            status: 404,
+                            msg: "Something is wrong",
+                            data: req.body
+                        })
+                    }
+                    if (result) {
+                        const payload = {
+                            id : success._id,
+                            firstName : success.firstName,
+                            lastName : success.lastName,
+                            emailId : success.emailId,
+                            role : success.role
+                        }
+                        const token = jwt.sign(payload, tokenSecret)
+                        res.json({
+                            status: 200,
+                            msg: "User Found",
+                            token: "Bearer " + token
+                        })
+                    } else {
+                        res.json({
+                            status: 401,
+                            msg: "Invalid Credentials",
+                            data: "Please try again"
+                        })
+                    }
+                })
+            }
+
+        })
+    }
 
     // console.log(bcrypt.compareSync(password,"$2b$10$0VXGOQHHmBVVW/qbgc9VjudmoomUOAqFi7ElGZy14u.T7NYi3llA6"));
 }

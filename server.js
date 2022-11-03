@@ -5,6 +5,9 @@ const userrouter = require("./routes/user-routes")
 const rolerouter = require("./routes/role-routes")
 const swaggerJsDoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
+const passport = require("passport")
+const jwt = require("jsonwebtoken")
+require("./passport-js")
 
 
 let app = express()
@@ -29,9 +32,17 @@ app.use('/api-docs',swaggerUi.serve , swaggerUi.setup(swaggerDocs))
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(passport.initialize())
 
 app.use("/auth",userrouter)
 app.use("/role",rolerouter)
+
+// app.get("/protected",passport.authenticate('jwt',{session : false}),(req,res)=>{
+//     res.json({
+//         success : true,
+//         user : req.user
+//     })
+// })
 
 let port = 9898
 
