@@ -155,11 +155,9 @@ function login(req, res) {
     // console.log(bcrypt.compareSync(password,"$2b$10$0VXGOQHHmBVVW/qbgc9VjudmoomUOAqFi7ElGZy14u.T7NYi3llA6"));
 }
 
+function getLoggedInUser(req,res){
 
-
-function generateToken(user) {
-    return jwt.sign({ data: user }, tokenSecret, { expiresIn: '24h' })
 }
-
 module.exports.signup = signup
 module.exports.login = login
+module.exports.getLoggedInUser = getLoggedInUser

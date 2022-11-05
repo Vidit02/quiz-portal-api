@@ -9,7 +9,7 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'my-token-secret';
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
     // console.log(jwt_payload);
-    userModel.findOne({id: jwt_payload.success._id}).populate('role').exec(function(err, user) {
+    userModel.findOne({id: jwt_payload.id}).populate('role').exec(function(err, user) {
         if (err) {
             return done(err, false);
         }

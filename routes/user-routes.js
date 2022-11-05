@@ -1,8 +1,10 @@
 var router = require("express").Router()
 const userController = require("../controller/user-controller")
 
+
 router.post("/signup",userController.signup)
 router.post("/login",userController.login)
+router.get("/loggedInDets",userController.getLoggedInUser)
 
 // const RoleController = require("./controller/role-controller")
 
