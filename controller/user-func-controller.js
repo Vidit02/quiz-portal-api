@@ -4,6 +4,7 @@ const express = require('express');
 
 function getLoggedInUser(req,res){
     res.json({
+        "status" : 200,
         "data" : "This is success",
         "user" : {
             "firstname" : req.user.firstName,
