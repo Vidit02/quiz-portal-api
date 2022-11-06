@@ -5,6 +5,7 @@ const userController = require("../controller/user-controller")
 router.post("/signup",userController.signup)
 router.post("/login",userController.login)
 router.get("/loggedInDets",userController.getLoggedInUser)
+router.post("/signupadmin",userController.signupadmin)
 
 // const RoleController = require("./controller/role-controller")
 
