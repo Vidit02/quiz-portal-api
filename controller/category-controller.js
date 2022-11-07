@@ -62,4 +62,44 @@ function addCategory(req,res){
     }
 }
 
+function listAllCategory(req,res){
+    categoryModel.find().exec((err,success)=>{
+        if(err || err == null && success == null){
+            res.json({
+                status : 401,
+                msg : "Something is wrong"
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Categories present",
+                data : success
+            })
+        }
+    })
+}
+
+function getCategory(req,res){
+    let title = req.body.title
+    // console.log(title);
+    categoryModel.findOne({"title":title},(err,success)=>{
+        console.log(err);
+        if(err){
+            res.json({
+                status : 401,
+                msg : "Something is Wrong",
+                data : req.body
+            })
+        } else {
+            res.json({
+                status : 200,
+                data : success,
+                msg : "Category Found"
+            })
+        }
+    })
+}
+
 module.exports.addCategory = addCategory
+module.exports.listAllCategory = listAllCategory
+module.exports.getCategory = getCategory
