@@ -102,8 +102,6 @@ function login(req, res) {
             data: req.body
         })
     } else {
-
-
         userModel.findOne({ "emailId": emailId }).populate("role").exec(function (err, success) {
             if (err || err == null && success == null) {
                 res.json({
