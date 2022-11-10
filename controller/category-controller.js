@@ -148,7 +148,29 @@ function updateCategory(req, res) {
         }
     })
 }
+
+function deleteCategory(req,res){
+    let title = req.body.title
+    console.log("this is title " , title);
+    categoryModel.deleteOne({"title" : title},(err,success)=>{
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 403,
+                msg: "Something went wrong",
+                data: req.body
+            })
+        } else {
+            res.json({
+                msg: "Category deleted",
+                status: 200,
+                data: success
+            })
+        }
+    })
+}
 module.exports.addCategory = addCategory
 module.exports.listAllCategory = listAllCategory
 module.exports.getCategory = getCategory
 module.exports.updateCategory = updateCategory
+module.exports.deleteCategory = deleteCategory
