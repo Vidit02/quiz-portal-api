@@ -6,6 +6,7 @@ const rolerouter = require("./routes/role-routes")
 const userfuncrouter = require("./routes/user-func-routes")
 const adminfuncrouter = require("./routes/admin-routes")
 const quizrouter = require("./routes/quiz-routes")
+const questionrouter = require("./routes/question-routes")
 const swaggerJsDoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 const passport = require("passport")
@@ -50,6 +51,7 @@ app.use("/role",rolerouter)
 app.use("/user",passport.authenticate('jwt',{session:false}),userfuncrouter)
 app.use("/admin",passport.authenticate('jwt',{session:false}),adminfuncrouter)
 app.use("/admin",passport.authenticate('jwt',{session:false}),quizrouter)
+app.use("/admin",passport.authenticate('jwt',{session:false}),questionrouter)
 let port = 9898
 
 mongoose.connect('mongodb://localhost:27017/quizportal',function(err){
