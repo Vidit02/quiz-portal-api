@@ -118,5 +118,24 @@ function listAllQuestions(req,res) {
     })
 }
 
+function getCategoryNumber(req,res){
+    let categoryid = req.body.categoryId
+    questionModel.find({"category":categoryid}).count().exec((err,success)=>{
+        if(err || err == null && success == null) {
+            res.json({
+                status : 401,
+                msg : "Something is wrong"
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Questions present",
+                data : success
+            })
+        }
+    })
+}
+
 module.exports.addQuestion = addQuestion
 module.exports.listAllQuestions = listAllQuestions
+module.exports.getCategoryNumber = getCategoryNumber
