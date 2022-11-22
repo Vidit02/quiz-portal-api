@@ -10,8 +10,9 @@ function addQuestion(req,res) {
     let optionD = req.body.optionD
     let correctAns = req.body.correctAns
     let difficulty = req.body.difficulty
-    let category = req.body.category
+    let category = req.body.categoryId
 
+    console.log("category id : " , category);
     let errors = {}
     let isError = false
 
@@ -97,4 +98,25 @@ function addQuestion(req,res) {
     }
 }
 
+function listAllQuestions(req,res) {
+    let categoryid = req.body.categoryId
+    // let finalcat = "ObjectId(" + categoryid + ")"
+    // console.log("final category : ", finalcat);
+    questionModel.find({"category":categoryid}).exec((err,success)=>{
+        if(err || err == null && success == null) {
+            res.json({
+                status : 401,
+                msg : "Something is wrong"
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Questions present",
+                data : success
+            })
+        }
+    })
+}
+
 module.exports.addQuestion = addQuestion
+module.exports.listAllQuestions = listAllQuestions
