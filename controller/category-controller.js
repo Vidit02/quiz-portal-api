@@ -169,8 +169,28 @@ function deleteCategory(req,res){
         }
     })
 }
+
+function getTitleList(req,res){
+    categoryModel.find({},{"title":1,"_id":0},(err,resp)=>{
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 403,
+                msg: "Something went wrong",
+                data: req.body
+            })
+        } else {
+            res.json({
+                msg: "Category Listed",
+                status: 200,
+                data: resp
+            })
+        }
+    })
+}
 module.exports.addCategory = addCategory
 module.exports.listAllCategory = listAllCategory
 module.exports.getCategory = getCategory
 module.exports.updateCategory = updateCategory
 module.exports.deleteCategory = deleteCategory
+module.exports.getTitleList = getTitleList
