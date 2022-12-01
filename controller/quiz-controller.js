@@ -106,6 +106,96 @@ function deleteQuiz(req,res){
         }
     })
 }
+
+function findQuiz(req,res){
+    let id = req.body.id
+    quizModel.findOne({"_id" : id},(err,success)=>{
+        if (err) {
+            console.log(err);
+            res.json({
+                status : 403,
+                msg : "Something is wrong",
+                data : req.body
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Quiz Found",
+                data : success
+            })
+        }
+    })
+}
+
+function updateQuiz(req,res){
+    let id = req.body.id
+    let title = req.body.title
+    let description = req.body.description
+    let sectiontitle = req.body.sectiontitle
+    let sectionnum = req.body.sectionnum
+
+    quizModel.findOne({"_id":id},(err,success)=>{
+        if (err) {
+            res.json({
+                status : 402,
+                msg : "Something went wrong"
+            })
+        } else {
+            console.log(success);
+            let quiz = {$set : {"description":description,"sectiontitle":sectiontitle,"sectionnum":sectionnum}}
+            quizModel.updateOne({"_id":id},quiz,(err,suc)=>{
+                if (err) {
+                    res.json({
+                        status : 403,
+                        msg : "Something went wrong",
+                        data : req.body
+                    })
+                } else {
+                    res.json({
+                        status : 200,
+                        data : suc,
+                        msg : "Quiz Saved"
+                    })
+                }
+            })
+        }
+    })
+}
+
+function updateQuizStatus(req,res){
+    let id = req.body.id
+    let statusquiz = req.body.status
+    quizModel.findOne({"_id" : id},(err,succ)=>{
+        if (err) {
+            res.json({
+                status : 402,
+                msg : "Something is wrong",
+                data : req.body
+            })
+        } else {
+            let quiz = {$set : {"status":statusquiz}}
+            quizModel.updateOne({"_id" : id},quiz,(err,success)=>{
+                if (err) {
+                    res.json({
+                        status : 403,
+                        msg : "Something went wrong",
+                        data : req.body
+                    })
+                } else {
+                    res.json({
+                        status : 200,
+                        data : success,
+                        msg : "Quiz updated"
+                    })
+                }
+            })
+        }
+    })
+}
+
 module.exports.addQuiz = addQuiz
 module.exports.listAllQuizzes = listAllQuizzes
 module.exports.deleteQuiz = deleteQuiz
+module.exports.findQuiz = findQuiz
+module.exports.updateQuiz = updateQuiz
+module.exports.updateQuizStatus = updateQuizStatus
