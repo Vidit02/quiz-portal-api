@@ -7,5 +7,6 @@ router.post("/deletequiz",quizController.deleteQuiz)
 router.post("/getquiz",quizController.findQuiz)
 router.post("/updatequiz",quizController.updateQuiz)
 router.post("/updatequizstatus",quizController.updateQuizStatus)
+router.get("/listquizactive",quizController.getAllActiveQuizzes)
 
 module.exports = router

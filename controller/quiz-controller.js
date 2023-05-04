@@ -6,6 +6,7 @@ function addQuiz(req,res){
     let description = req.body.description
     let sectiontitle = req.body.sectiontitle
     let sectionnum = req.body.sectionnum
+    let sectiontime = req.body.sectiontime
     let status = false
 
     let error = {}
@@ -25,7 +26,11 @@ function addQuiz(req,res){
     }
     if(sectionnum == undefined || sectionnum == ""){
         isError = true
-        error.sectiontitleError = "Please Enter Number of Section"
+        error.sectionNumberError = "Please Enter Number of Section"
+    }
+    if(sectiontime == undefined || sectiontime == ""){
+        isError = true
+        error.sectionTimeError = "Please Enter Max Time"
     }
     if(isError){
         res.json({
@@ -48,6 +53,7 @@ function addQuiz(req,res){
                     "description" : description,
                     "sectionnum" : sectionnum,
                     "sectiontitle" : sectiontitle,
+                    "sectiontime" : sectiontime,
                     "status" : status
                 })
                 quiz.save((err,success)=>{
@@ -193,9 +199,27 @@ function updateQuizStatus(req,res){
     })
 }
 
+function getAllActiveQuizzes(req,res){
+    quizModel.find({"status" : true }).exec((err,success) => {
+        if(err || err == null && success == null) {
+            res.json({
+                status : 401,
+                msg : "Something is wrong"
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Quizzes present",
+                data : success
+            })
+        }
+    })
+}
+
 module.exports.addQuiz = addQuiz
 module.exports.listAllQuizzes = listAllQuizzes
 module.exports.deleteQuiz = deleteQuiz
 module.exports.findQuiz = findQuiz
 module.exports.updateQuiz = updateQuiz
 module.exports.updateQuizStatus = updateQuizStatus
+module.exports.getAllActiveQuizzes = getAllActiveQuizzes
