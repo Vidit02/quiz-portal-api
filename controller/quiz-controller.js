@@ -7,6 +7,7 @@ function addQuiz(req,res){
     let sectiontitle = req.body.sectiontitle
     let sectionnum = req.body.sectionnum
     let sectiontime = req.body.sectiontime
+    console.log(sectiontime  + "this is time");
     let status = false
 
     let error = {}

@@ -136,6 +136,66 @@ function getCategoryNumber(req,res){
     })
 }
 
+function getQuestion(req,res){
+    let questionid = req.body.questionId
+    questionModel.findOne({"_id":questionid},(err,success)=>{
+        if(err) {
+            console.log(err);
+            res.json({
+                status : 403,
+                msg : "Something is wrong",
+                data : req.body
+            })
+        } else {
+            res.json({
+                status : 200,
+                msg : "Question Found",
+                data : success
+            })
+        }
+    })
+}
+
+function updateQuestion(req,res){
+    let id = req.body.id
+    let question = req.body.question
+    let optionA = req.body.optionA
+    let optionB = req.body.optionB
+    let optionC = req.body.optionC
+    let optionD = req.body.optionD
+    let correctAns = req.body.correctAns
+    let difficulty = req.body.difficulty
+    let category = req.body.categoryId
+
+    questionModel.findOne({"_id":id},(err,success)=>{
+        if(err){
+            res.json({
+                status : 402,
+                msg : "Something is wrong"
+            })
+        } else {
+            let quest = {$set : {"question":question,"optionA":optionA,"optionB":optionB,"optionC":optionC,"optionD":optionD,"correctAns":correctAns,"difficulty":difficulty}}
+            questionModel.updateOne({"_id":id},quest,(err,succ)=>{
+                if(err){
+                    res.json({
+                        status : 403,
+                        msg : "Soemthing went wrong",
+                        data : req.body
+                    })
+                } else {
+                    res.json({
+                        status : 200,
+                        data : succ,
+                        msg : "Question saved"
+                    })
+                }
+            })
+        }
+    })
+}
+
 module.exports.addQuestion = addQuestion
 module.exports.listAllQuestions = listAllQuestions
 module.exports.getCategoryNumber = getCategoryNumber
+module.exports.getQuestion = getQuestion
+module.exports.updateQuestion = updateQuestion
